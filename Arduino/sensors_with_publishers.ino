@@ -37,9 +37,9 @@ std_msgs::Float64 angle_y_msg;
 std_msgs::Float64 angle_z_msg;
 
 std_msgs::Float64 distance_r_msg;
-std_msgs::Float64 distance_l_msg;
+std_msgs::Float64 distance_b_msg;
 std_msgs::Float64 confidence_r_msg;
-std_msgs::Float64 confidence_l_msg;
+std_msgs::Float64 confidence_b_msg;
 // std_msgs::String imu_msg;
 // std_msgs::String pressure_msg;
 
@@ -100,6 +100,29 @@ void message7(const std_msgs::String& msg)
   
 }
 
+void message_middle(const std_msgs::String& msg)
+{
+  //Serial.print("Inside Message Middle ");
+  //Serial.print(int(msg.data));
+  pwm_value= msg.data;
+
+  pwm_mr= (pwm_value.substring(0,4)).toInt();
+  pwm_ml= (pwm_value.substring(5,9)).toInt();  
+}
+
+void message_car(const std_msgs::String& msg)
+{
+  //Serial.print("Inside Message Car ");
+  //Serial.print(int(msg.data));
+  pwm_value= msg.data;
+
+  pwm_fr= (pwm_value.substring(0,4)).toInt();
+  pwm_fl= (pwm_value.substring(5,9)).toInt();  
+  pwm_br= (pwm_value.substring(10,14)).toInt();
+  pwm_bl= (pwm_value.substring(15,19)).toInt();  
+}
+
+
 
 ros::Publisher pub_accx("accx", &accx_msg);
 ros::Publisher pub_accy("accy", &accy_msg);
@@ -117,13 +140,15 @@ ros::Publisher pub_angle_y("angle_y", &angle_y_msg);
 ros::Publisher pub_angle_z("angle_z", &angle_z_msg);
 
 ros::Publisher pub_dist_r("dist_r", &distance_r_msg);
-ros::Publisher pub_dist_l("dist_l", &distance_l_msg);
+ros::Publisher pub_dist_b("dist_b", &distance_l_msg);
 ros::Publisher pub_con_r("con_r", &confidence_r_msg);
-ros::Publisher pub_con_l("con_l", &confidence_l_msg);
+ros::Publisher pub_con_b("con_b", &confidence_l_msg);
 
 ros::Publisher pub("Verify", &pub_msg);
 ros::Publisher pub_depth("Depth", &depth_msg);
 ros::Subscriber<std_msgs::String> sub("PWM_VALUE", &message7);
+ros::Subscriber<std_msgs::String> sub_only_depth("PWM_VALUE_Middle", &message_middle);
+ros::Subscriber<std_msgs::String> sub_only_car("PWM_VALUE_car", &message_car);
 
 void setup()
 {
@@ -131,6 +156,8 @@ void setup()
   
   nh.initNode();
   nh.subscribe(sub);
+  nh.subscribe(sub_only_depth);
+  nh.subscribe(sub_only_car);
   nh.advertise(pub);
   nh.advertise(pub_depth);
   
@@ -150,9 +177,9 @@ void setup()
   nh.advertise(pub_angle_z);
 
   nh.advertise(pub_dist_r);
-  nh.advertise(pub_dist_l);
+  nh.advertise(pub_dist_b);
   nh.advertise(pub_con_r);
-  nh.advertise(pub_con_l);
+  nh.advertise(pub_con_b);
   // nh.advertise(pub_imu);
   // nh.advertise(pub_pressure);
   
@@ -333,18 +360,18 @@ void DIST_R(){
 }
 
 void DIST_B(){
-    distance_Left = ping_B.distance();
-    distance_l_msg.data=distance_Left;
-    pub_dist_l.publish(&distance_l_msg);
+    distance_back = ping_B.distance();
+    distance_b_msg.data=distance_back;
+    pub_dist_b.publish(&distance_b_msg);
     
     
 }
 
 void CON_B(){
 
-    confidence_Left = ping_B.confidence();
-    confidence_l_msg.data=confidence_Left;
-    pub_con_l.publish(&confidence_l_msg);
+    confidence_back = ping_B.confidence();
+    confidence_b_msg.data=confidence_back;
+    pub_con_b.publish(&confidence_b_msg);
     
     
 }
@@ -447,10 +474,6 @@ void loop()
     DIST_B();
     CON_R();
     CON_B();
-
-
-    
-
 
    nh.spinOnce();
 
