@@ -8,11 +8,16 @@ import numpy as np
 from matplotlib import pyplot as plt
 from auv_codes2.msg import distance_and_center
 
-img
+img = 0
 
 def image_processing(img):
 
 	detected = 0 # both the flares not detected
+
+	# cases: 
+	# a. 2 contours are detected and both are vertical, fine for us
+	# b. A single contour is detected for the entire gate, fine for us
+	# c. 3 contours are detected for all 3 pipes (one horizontal, two vertical), fine for us
 
 	if(detected == 1):
 
