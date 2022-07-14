@@ -104,6 +104,12 @@ def straightLine_pid_imu():
 
 # def moveForward:
 # 	err_y, correction_y, err_a, correction_a = straightLine_pid_imu()
+
+def stopAll():
+	global pwm_fr, pwm_br, pwm_fl, pwm_bl 
+	pwm_fr, pwm_br, pwm_fl, pwm_bl = pwmBase, pwmBase, pwmBase, pwmBase
+	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '		
+	pub.publish(pwm_msg)
 	
 def accy_callback(msg):
 	global acc_y
@@ -130,14 +136,18 @@ def callback_gui(config, level):
 
 if __name__ == "__main__":
 	
-    rospy.init_node("only_straight_pid", anonymous = False)
-    q = 1
-    
-    rospy.Subscriber("angle_z", Float64, yaw_callback)
-    rospy.Subscriber("accx", Float64, accx_callback)
-    rospy.Subscriber("accy", Float64, accy_callback)
+	try:
+		rospy.init_node("only_straight_pid", anonymous = False)
+		q = 1
+		
+		rospy.Subscriber("angle_z", Float64, yaw_callback)
+		rospy.Subscriber("accx", Float64, accx_callback)
+		rospy.Subscriber("accy", Float64, accy_callback)
+		
+		pub=rospy.Publisher("PWM_VALUE_car",String ,queue_size=q)
+		srv = Server(PID_yawConfig, callback_gui)
 	
-    pub=rospy.Publisher("PWM_VALUE_car",String ,queue_size=q)
-    srv = Server(PID_yawConfig, callback_gui)
-   
-    rospy.spin()
+		rospy.spin()
+
+	except KeyboardInterrupt:
+		stopAll()
