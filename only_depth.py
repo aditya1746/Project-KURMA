@@ -106,6 +106,11 @@ def depth_callback(msg):
 	depth = msg.data
     depth_pid_pressure()
 
+def depthCBinGUI(msg):
+	global depth
+	depth = msg
+    depth_pid_pressure()
+
 def roll_callback(msg):
 	global roll
 	roll = msg.data
