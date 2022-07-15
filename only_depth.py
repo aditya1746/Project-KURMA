@@ -82,6 +82,11 @@ def depth_pid_pressure():
 	pwm_msg = str(pwm_mr) + ' ' + str(pwm_ml) + ' '
 	pub.publish(pwm_msg)
 	rospy.loginfo(depth)
+
+def stopMiddle():
+	pwm_mr, pwm_ml = pwmBase, pwmBase
+	pwm_msg = str(pwm_mr) + ' ' + str(pwm_ml) + ' '
+	pub.publish(pwm_msg)
 	
 
 def callback_gui(config, level):
@@ -101,13 +106,16 @@ def roll_callback(msg):
 
 if __name__ == "__main__":
 	
-    rospy.init_node("only_depth_pid", anonymous = False)
-    q = 1
-    
-    rospy.Subscriber("Depth", Float32, depth_callback)
-    rospy.Subscriber("angle_x", Float64, roll_callback)
+	try:
+		rospy.init_node("only_depth_pid", anonymous = False)
+		q = 1
+		
+		rospy.Subscriber("Depth", Float32, depth_callback)
+		rospy.Subscriber("angle_x", Float64, roll_callback)
+		
+		pub=rospy.Publisher("PWM_VALUE_Middle",String ,queue_size=q)
+		srv = Server(PID_yawConfig, callback_gui)
 	
-    pub=rospy.Publisher("PWM_VALUE_Middle",String ,queue_size=q)
-    srv = Server(PID_yawConfig, callback_gui)
-   
-    rospy.spin()
+		rospy.spin()
+	except KeyboardInterrupt:
+		stopMiddle()
