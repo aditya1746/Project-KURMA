@@ -111,6 +111,13 @@ def stopCar():
 	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '		
 	pub.publish(pwm_msg)
 	
+def startCar():
+	global pwm_fr, pwm_br, pwm_fl, pwm_bl 
+	pwm_fr, pwm_br, pwm_fl, pwm_bl = 100, 100, 100, 100
+	pwm_fr, pwm_br, pwm_fl, pwm_bl = pwmBase - 1*int(pwm_fr), pwmBase +int(pwm_br),pwmBase + int(pwm_fl), pwmBase +int(pwm_bl)
+	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '		
+	pub.publish(pwm_msg)
+	
 def accy_callback(msg):
 	global acc_y
 	acc_y = msg.data
