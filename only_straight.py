@@ -134,6 +134,15 @@ def yaw_callback(msg):
 		cnt = 1
 	
 	straightLine_pid_imu()
+
+def yawCBinGUI(msg):
+	global yaw, yaw_desired, cnt
+	yaw = msg
+	if(cnt==0):
+		yaw_desired=yaw
+		cnt = 1
+	
+	straightLine_pid_imu()
 	
 def callback_gui(config, level):
     rospy.loginfo("""Reconfigure Request: {KP_yaw}, {KI_yaw}, {KD_yaw}""".format(**config))
