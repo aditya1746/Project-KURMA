@@ -105,7 +105,7 @@ def straightLine_pid_imu():
 # def moveForward:
 # 	err_y, correction_y, err_a, correction_a = straightLine_pid_imu()
 
-def stopAll():
+def stopCar():
 	global pwm_fr, pwm_br, pwm_fl, pwm_bl 
 	pwm_fr, pwm_br, pwm_fl, pwm_bl = pwmBase, pwmBase, pwmBase, pwmBase
 	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '		
@@ -150,4 +150,4 @@ if __name__ == "__main__":
 		rospy.spin()
 
 	except KeyboardInterrupt:
-		stopAll()
+		stopCar()
