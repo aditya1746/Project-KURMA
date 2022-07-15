@@ -87,6 +87,12 @@ def stopMiddle():
 	pwm_mr, pwm_ml = pwmBase, pwmBase
 	pwm_msg = str(pwm_mr) + ' ' + str(pwm_ml) + ' '
 	pub.publish(pwm_msg)
+
+def startMiddle():
+	pwm_mr, pwm_ml = 100, 100
+	pwm_mr, pwm_ml = pwmBase + int(pwm_mr), pwmBase - 1*int(pwm_ml)
+	pwm_msg = str(pwm_mr) + ' ' + str(pwm_ml) + ' '
+	pub.publish(pwm_msg)
 	
 
 def callback_gui(config, level):
