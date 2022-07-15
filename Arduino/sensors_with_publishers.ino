@@ -208,35 +208,33 @@ void setup()
   mpu6050.calcGyroOffsets(true);
 
   //initialize sonar right
-//  while (!ping_R.initialize()) {
+  int nLoop = 0;
+//  while (!ping_R.initialize() && nLoop<3) {
 //    Serial.println("\nPing Sonar Right device failed to initialize!");
 //    delay(2000);
+//    nLoop = nLoop+1;
 //  }
-//  while (!ping_B.initialize()) {
+  nLoop = 0;
+//  while (!ping_B.initialize() && nLoop<3) {
 //    Serial.println("\nPing Sonar Back device failed to initialize!");
 //    delay(2000);
+//    nLoop = nLoop+1;
 //  }
-
-
   
-
-  
-//  while (!sensor.init()) {
+  nLoop = 0;
+//  while (!sensor.init() && nLoop<3) {
 //    Serial.println("\nPressure device failed to initialize!");
 //    delay(5000);
+//    nLoop = nLoop+1;
 //  }
   sensor.setModel(MS5837::MS5837_30BA);
   sensor.setFluidDensity(997); // kg/m^3 (freshwater, 1029 for seawater)
-
-  
 }
 
 void MOVE()
 {
   //servoFrontRight.write(pwm_fr);
 
-
-  
   servoFrontRight.writeMicroseconds(pwm_fr);
   servoFrontLeft.writeMicroseconds(pwm_fl);
   servoMiddleRight.writeMicroseconds(pwm_mr);
@@ -244,7 +242,6 @@ void MOVE()
   servoBackRight.writeMicroseconds(pwm_br);
   servoBackLeft.writeMicroseconds(pwm_bl);
 
-    
     pwm_value.toCharArray(pwm, 30);
     pub_msg.data = pwm;
     pub.publish(&pub_msg);
